@@ -1,7 +1,24 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useRootNavigation, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+import { useAuth } from '@/context/AuthContext';
+
 export default function TabLayout() {
+  const router = useRouter();
+  const rootNavigation = useRootNavigation();
+  const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && rootNavigation?.isReady() && !user) {
+      router.replace('/login');
+    }
+  }, [isLoading, rootNavigation, router, user]);
+
+  if (isLoading || !user) {
+    return null;
+  }
+
   return (
     <Tabs
       screenOptions={{
