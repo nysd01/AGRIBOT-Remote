@@ -61,6 +61,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="network"
+        options={{
+          title: 'NETWORK',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="wifi-cog" color={color} size={size} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

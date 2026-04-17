@@ -5,9 +5,7 @@ import {
   View,
   Text,
   Pressable,
-  Alert,
   PanResponder,
-  Animated,
   useWindowDimensions,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -214,12 +212,6 @@ export default function RemoteScreen() {
       default:
         return 'circle';
     }
-  };
-
-  const handleDirectionPress = (dir: string) => {
-    setDirection(dir);
-    Alert.alert('Direction', `Moving ${dir}`);
-    setTimeout(() => setDirection(null), 300);
   };
 
   return (
