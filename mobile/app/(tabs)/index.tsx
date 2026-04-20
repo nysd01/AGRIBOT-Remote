@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
   Alert,
@@ -17,7 +17,7 @@ import { styles } from '@/styles/dashboard.styles';
 type Mode = 'manual' | 'auto';
 
 export default function DashboardScreen() {
-  const navigation = useNavigation<any>();
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>('auto');
   const { width } = useWindowDimensions();
   const compact = width < 390;
@@ -60,7 +60,7 @@ export default function DashboardScreen() {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onPress={() => navigation.navigate('Settings')}
+              onPress={() => router.push('/modal-settings')}
             >
               <MaterialCommunityIcons name="cog" size={18} color="#58C95F" />
             </Pressable>
