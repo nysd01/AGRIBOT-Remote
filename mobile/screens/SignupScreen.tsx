@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { useRouter } from 'expo-router';
+=======
+>>>>>>> 216f2d664496eb2cb633b76c9586539cb2f22b5d
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'expo-router';
 import {
   ActivityIndicator,
   Alert,
@@ -224,7 +228,11 @@ export default function SignupScreen() {
           {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account?</Text>
+<<<<<<< HEAD
             <TouchableOpacity onPress={() => router.back()}>
+=======
+            <TouchableOpacity onPress={() => router.replace('/login')}>
+>>>>>>> 216f2d664496eb2cb633b76c9586539cb2f22b5d
               <Text style={styles.footerLink}>Sign in here</Text>
             </TouchableOpacity>
           </View>
