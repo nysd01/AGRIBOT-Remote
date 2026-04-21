@@ -1,20 +1,18 @@
-import { useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
-
 import type { User } from '@/types';
 
 type UserRecord = User & { password_hash: string };
 
-let database: SQLiteDatabase | null = null;
+let database: any = null;
 
-export function useDB(): SQLiteDatabase {
-  return useSQLiteContext();
+export function useDB(): any {
+  throw new Error('SQLite is not available on web platform');
 }
 
-export function registerDatabase(db: SQLiteDatabase): void {
+export function registerDatabase(db: any): void {
   database = db;
 }
 
-function getDatabase(): SQLiteDatabase {
+function getDatabase(): any {
   if (!database) {
     throw new Error('SQLite database is not initialized yet.');
   }
@@ -67,7 +65,7 @@ async function getUserRecordByEmail(email: string): Promise<UserRecord | null> {
   }
 }
 
-export async function initDB(db: SQLiteDatabase = getDatabase()): Promise<void> {
+export async function initDB(db: any = getDatabase()): Promise<void> {
   try {
     registerDatabase(db);
 

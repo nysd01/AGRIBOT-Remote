@@ -439,40 +439,58 @@ export default function RemoteScreen() {
             {/* MANUAL CONTROL MODE - LANDSCAPE */}
             {isLandscape ? (
               <View style={remoteStyles.landscapeManualContainer}>
-                {/* Full Screen Camera Background with Pan */}
-                <View
+                {/* Full Screen Camera Background with Pan & Scroll */}
+                <ScrollView
                   ref={cameraRef}
                   style={remoteStyles.landscapeVideoBackground}
-                  {...cameraResponder.panHandlers}
+                  scrollEventThrottle={16}
+                  onScroll={({ nativeEvent }) => {
+                    // Map scroll gestures to camera movement
+                    const scrollY = nativeEvent.contentOffset.y;
+                    const scrollX = nativeEvent.contentOffset.x;
+                    const maxScroll = 80;
+                    
+                    // Normalize scroll to camera movement range
+                    const cameraPan = {
+                      x: Math.max(-40, Math.min(40, (scrollX / maxScroll) * 40)),
+                      y: Math.max(-40, Math.min(40, (scrollY / maxScroll) * 40)),
+                    };
+                    setCameraPosition(cameraPan);
+                  }}
+                  scrollEnabled={true}
+                  showsVerticalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
                 >
-                  {/* Camera pan effect with slight transform */}
-                  <View
-                    style={[
-                      remoteStyles.landscapeVideoContent,
-                      {
-                        transform: [
-                          { translateX: cameraPosition.x },
-                          { translateY: cameraPosition.y },
-                        ],
-                      },
-                    ]}
-                  >
-                    <MaterialCommunityIcons
-                      name="robot-industrial"
-                      size={200}
-                      color="#58C95F"
-                      style={{ opacity: 0.6 }}
-                    />
-                    <Text style={remoteStyles.landscapeVideoLabel}>
-                      Lactuca sativa: 94.2%
-                    </Text>
+                  <View style={remoteStyles.landscapeScrollableContent}>
+                    {/* Camera pan effect with slight transform */}
+                    <View
+                      style={[
+                        remoteStyles.landscapeVideoContent,
+                        {
+                          transform: [
+                            { translateX: cameraPosition.x },
+                            { translateY: cameraPosition.y },
+                          ],
+                        },
+                      ]}
+                    >
+                      <MaterialCommunityIcons
+                        name="robot-industrial"
+                        size={200}
+                        color="#58C95F"
+                        style={{ opacity: 0.6 }}
+                      />
+                      <Text style={remoteStyles.landscapeVideoLabel}>
+                        Lactuca sativa: 94.2%
+                      </Text>
+                    </View>
+
+                    {/* Camera Hint */}
+                    <Text style={remoteStyles.cameraHintText}>Scroll to move camera</Text>
                   </View>
+                </ScrollView>
 
-                  {/* Camera Pan Hint */}
-                  <Text style={remoteStyles.cameraHintText}>Swipe to pan camera</Text>
-                </View>
-
-                {/* Joystick Overlay - Bottom Center */}
+                {/* Joystick Overlay - Bottom Left */}
                 <View style={remoteStyles.landscapeJoystickContainer}>
                   <View
                     ref={joystickRef}

@@ -1,72 +1,42 @@
-import "react-native-gesture-handler";
-
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { SQLiteProvider } from "expo-sqlite";
-import React from "react";
-import { ActivityIndicator, View } from "react-native";
-
-import { AuthProvider, useAuth } from "@/context/AuthContext";
-import HomeScreen from "@/screens/HomeScreen";
-import LoginScreen from "@/screens/LoginScreen";
-import SignupScreen from "@/screens/SignupScreen";
-import BiometricLoginScreen from "@/screens/BiometricLoginScreen";
-import type { RootStackParamList } from "@/types/navigation";
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-function RootNavigator() {
-  const { user, isLoading, biometricUserId } = useAuth();
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  return (
-    <Stack.Navigator>
-      {user ? (
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ headerShown: false }}
-        />
-      ) : biometricUserId ? (
-        <Stack.Screen
-          name="BiometricLogin"
-          component={BiometricLoginScreen}
-          initialParams={{ userId: biometricUserId }}
-          options={{ headerShown: false }}
-        />
-      ) : (
-        <>
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{ title: "Login" }}
-          />
-          <Stack.Screen
-            name="Signup"
-            component={SignupScreen}
-            options={{ title: "Sign Up" }}
-          />
-        </>
-      )}
-    </Stack.Navigator>
-  );
-}
+import React from 'react';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   return (
-    <SQLiteProvider databaseName="app.db" useSuspense={false}>
-      <AuthProvider>
-        <NavigationContainer>
-          <RootNavigator />
-        </NavigationContainer>
-      </AuthProvider>
-    </SQLiteProvider>
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Agribot</Text>
+        <Text style={styles.subtitle}>
+          This app uses Expo Router. Entry point is in app/ directory.
+        </Text>
+      </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: '#070A0A',
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  title: {
+    color: '#72F88A',
+    fontSize: 36,
+    fontWeight: '800',
+    marginBottom: 12,
+  },
+  subtitle: {
+    color: '#D6E2DA',
+    fontSize: 15,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginTop: 6,
+  },
+});
+

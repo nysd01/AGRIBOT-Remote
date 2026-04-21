@@ -410,10 +410,14 @@ export const remoteStyles = StyleSheet.create({
   landscapeVideoBackground: {
     flex: 1,
     backgroundColor: '#070A0A',
-    justifyContent: 'center',
-    alignItems: 'center',
     overflow: 'hidden',
     position: 'relative',
+  },
+  landscapeScrollableContent: {
+    minHeight: '200%',
+    minWidth: '200%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   landscapeVideoContent: {
     justifyContent: 'center',
@@ -442,11 +446,10 @@ export const remoteStyles = StyleSheet.create({
   },
   landscapeJoystickContainer: {
     position: 'absolute',
-    bottom: 12,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
+    bottom: 16,
+    left: 16,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     zIndex: 20,
   },
   landscapeJoystickRing: {

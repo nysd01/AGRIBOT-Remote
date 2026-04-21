@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useSQLiteContext } from 'expo-sqlite';
+import { Platform } from 'react-native';
 
 import {
   createUser,
@@ -14,6 +14,7 @@ import {
   getUserById,
   registerDatabase,
   updateBiometricEnrollment,
+  initDB,
 } from '@/db/database';
 import type { AuthContextType, User } from '@/types';
 import { hashPassword, isPasswordValid, verifyPassword } from '@/utils/auth';
@@ -27,24 +28,55 @@ import {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const db = useSQLiteContext();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [biometricUserId, setBiometricUserId] = useState<number | null>(null);
+  const [dbInitialized, setDbInitialized] = useState(false);
 
+  // Initialize database on mount (native only)
   useEffect(() => {
-    registerDatabase(db);
-  }, [db]);
+    const initializeDatabase = async () => {
+      if (Platform.OS === 'web') {
+        setDbInitialized(true);
+        return;
+      }
+
+      try {
+        // On native, get the database from expo-sqlite provider
+        // The database is passed via SQLiteProvider context
+        const sqlite = await (eval("import('expo-sqlite')") as Promise<any>);
+        const db = await sqlite.openDatabaseAsync('agribot.db');
+        
+        // Initialize database tables
+        await initDB(db);
+        setDbInitialized(true);
+      } catch (error) {
+        console.error('Failed to initialize database:', error);
+        // Don't stop the app, just continue without local database
+        setDbInitialized(true);
+      }
+    };
+
+    initializeDatabase();
+  }, []);
 
   const restoreSession = useCallback(async () => {
-    const userId = await getBiometricSession();
-    if (userId === null) {
+    if (!dbInitialized) {
       return;
     }
 
-    // Found a biometric session - show the biometric login screen
-    setBiometricUserId(userId);
-  }, []);
+    try {
+      const userId = await getBiometricSession();
+      if (userId === null) {
+        return;
+      }
+
+      // Found a biometric session - show the biometric login screen
+      setBiometricUserId(userId);
+    } catch (error) {
+      console.warn('Failed to restore biometric session:', error);
+    }
+  }, [dbInitialized]);
 
   useEffect(() => {
     let mounted = true;

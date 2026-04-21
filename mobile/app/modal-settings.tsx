@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { useAuth } from '@/context/AuthContext';
@@ -138,6 +139,7 @@ const settingsStyles = StyleSheet.create({
 });
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const { user, logout } = useAuth();
   const [notifications, setNotifications] = useState(true);
   const [autoConnect, setAutoConnect] = useState(true);
@@ -205,13 +207,14 @@ export default function SettingsScreen() {
   const handleLogout = useCallback(async () => {
     try {
       await logout();
+      router.dismiss(); // Close the settings modal
     } catch (error) {
       Alert.alert(
         'Logout failed',
         error instanceof Error ? error.message : 'Unknown error'
       );
     }
-  }, [logout]);
+  }, [logout, router]);
 
   return (
     <SafeAreaView style={settingsStyles.safe}>

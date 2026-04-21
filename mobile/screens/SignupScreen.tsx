@@ -1,8 +1,9 @@
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -17,11 +18,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { isPasswordValid, PASSWORD_VALIDATION_MESSAGE } from '@/utils/auth';
 import { isBiometricAvailable } from '@/utils/biometrics';
-import type { RootStackParamList } from '@/types/navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
-
-export default function SignupScreen({ navigation }: Props) {
+export default function SignupScreen() {
+  const router = useRouter();
   const { signup } = useAuth();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -39,6 +38,13 @@ export default function SignupScreen({ navigation }: Props) {
 
   useEffect(() => {
     const loadBiometricState = async () => {
+      // Biometric is only available on native platforms
+      if (Platform.OS === 'web') {
+        setBiometricAvailable(false);
+        setEnrollBiometric(false);
+        return;
+      }
+
       const available = await isBiometricAvailable();
       setBiometricAvailable(available);
       setEnrollBiometric(available);
@@ -218,7 +224,7 @@ export default function SignupScreen({ navigation }: Props) {
           {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Text style={styles.footerLink}>Sign in here</Text>
             </TouchableOpacity>
           </View>
